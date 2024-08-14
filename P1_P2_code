@@ -1,0 +1,73 @@
+-- Creating the schema
+CREATE SCHEMA LibraryManagement;
+
+-- Switching to the schema
+USE LibraryManagement;
+
+-- Creating the authors table
+CREATE TABLE authors (
+    author_id INT AUTO_INCREMENT PRIMARY KEY,
+    author_name VARCHAR(255)
+);
+
+-- Creating the genres table
+CREATE TABLE genres (
+    genre_id INT AUTO_INCREMENT PRIMARY KEY,
+    genre_name VARCHAR(255)
+);
+
+-- Creating the books table
+CREATE TABLE books (
+    book_id INT AUTO_INCREMENT PRIMARY KEY,
+    title VARCHAR(255),
+    publication_year YEAR,
+    author_id INT,
+    genre_id INT,
+    FOREIGN KEY (author_id) REFERENCES authors(author_id),
+    FOREIGN KEY (genre_id) REFERENCES genres(genre_id)
+);
+
+-- Creating the users table
+CREATE TABLE users (
+    user_id INT AUTO_INCREMENT PRIMARY KEY,
+    username VARCHAR(255),
+    email VARCHAR(255)
+);
+
+-- Creating the borrowed_books table
+CREATE TABLE borrowed_books (
+    borrow_id INT AUTO_INCREMENT PRIMARY KEY,
+    book_id INT,
+    user_id INT,
+    borrow_date DATE,
+    return_date DATE,
+    FOREIGN KEY (book_id) REFERENCES books(book_id),
+    FOREIGN KEY (user_id) REFERENCES users(user_id)
+);
+
+
+-- Filling the tables
+
+-- Inserting data into the authors table
+INSERT INTO authors (author_name) VALUES ('Franz Kafka');
+INSERT INTO authors (author_name) VALUES ('J.K. Rowling');
+
+-- Inserting data into the genres table
+INSERT INTO genres (genre_name) VALUES ('Absurdist fiction');
+INSERT INTO genres (genre_name) VALUES ('Fantasy');
+
+-- Inserting data into the books table
+INSERT INTO books (title, publication_year, author_id, genre_id) 
+VALUES ('The Metamorphosis', 1915, 1, 1);
+INSERT INTO books (title, publication_year, author_id, genre_id) 
+VALUES ('Harry Potter and the Philosopher\'s Stone', 1997, 2, 2);
+
+-- Inserting data into the users table
+INSERT INTO users (username, email) VALUES ('JohnDoe', 'johndoe@exm.com');
+INSERT INTO users (username, email) VALUES ('JaneSmith', 'janesmith@exm.com');
+
+-- Inserting data into the borrowed_books table
+INSERT INTO borrowed_books (book_id, user_id, borrow_date, return_date) 
+VALUES (1, 1, '2024-08-01', '2024-08-15');
+INSERT INTO borrowed_books (book_id, user_id, borrow_date, return_date) 
+VALUES (2, 2, '2024-08-03', '2024-08-17');
