@@ -1,0 +1,103 @@
+USE mydb;
+
+-- Count the total number of rows in the joined tables
+SELECT COUNT(*) AS inner_rows
+FROM
+    order_details
+INNER JOIN orders ON order_details.order_id = orders.id
+INNER JOIN customers ON orders.customer_id = customers.id
+INNER JOIN products ON order_details.product_id = products.id
+INNER JOIN categories ON products.category_id = categories.id
+INNER JOIN employees ON orders.employee_id = employees.employee_id
+INNER JOIN shippers ON orders.shipper_id = shippers.id
+INNER JOIN suppliers ON products.supplier_id = suppliers.id;
+
+-- Using LEFT JOIN instead of INNER JOIN
+SELECT COUNT(*) AS left_rows
+FROM
+    order_details 
+LEFT JOIN orders ON order_details.order_id = orders.id
+LEFT JOIN customers ON orders.customer_id = customers.id
+LEFT JOIN products ON order_details.product_id = products.id
+LEFT JOIN categories ON products.category_id = categories.id
+LEFT JOIN employees ON orders.employee_id = employees.employee_id
+LEFT JOIN shippers ON orders.shipper_id = shippers.id
+LEFT JOIN suppliers ON products.supplier_id = suppliers.id;
+
+-- Using RIGHT JOIN instead of INNER JOIN
+SELECT COUNT(*)
+FROM
+    order_details
+RIGHT JOIN orders ON order_details.order_id = orders.id
+RIGHT JOIN customers ON orders.customer_id = customers.id
+RIGHT JOIN products ON order_details.product_id = products.id
+RIGHT JOIN categories ON products.category_id = categories.id
+RIGHT JOIN employees ON orders.employee_id = employees.employee_id
+RIGHT JOIN shippers ON orders.shipper_id = shippers.id
+RIGHT JOIN suppliers ON products.supplier_id = suppliers.id;
+
+-- When I changed INNER JOIN to LEFT JOIN or RIGHT JOIN, the number of rows remained the same.
+-- However, with the RIGHT JOIN, I encountered an issue when trying to join all the tables.
+-- It only worked for 3-4 tables, but when I tried to join more tables, the query took a long time to execute,
+-- and I lost the connection to the server. This issue could be due to the large number of unmatched rows
+-- or the increased complexity of the query, causing performance problems with the RIGHT JOIN.
+ 
+
+-- Select specific employee records based on employee_id criteria
+SELECT *
+FROM orders
+WHERE employee_id > 3 AND employee_id <= 10;
+
+-- Group by category name and calculate count and average quantity
+SELECT 
+    categories.name AS category_name,
+    COUNT(*) AS row_count,
+    AVG(order_details.quantity) AS avg_quantity
+FROM 
+    order_details
+INNER JOIN products ON order_details.product_id = products.id
+INNER JOIN categories ON products.category_id = categories.id
+GROUP BY 
+    categories.name;
+
+
+-- Filter rows where average quantity is greater than 21
+SELECT 
+    categories.name AS category_name,
+    COUNT(*) AS row_count,
+    AVG(order_details.quantity) AS avg_quantity
+FROM 
+    order_details
+INNER JOIN products ON order_details.product_id = products.id
+INNER JOIN categories ON products.category_id = categories.id
+GROUP BY 
+    categories.name
+HAVING 
+    AVG(order_details.quantity) > 21;
+
+
+-- Sort by descending row count
+SELECT 
+    categories.name AS category_name,
+    COUNT(*) AS row_count,
+    AVG(order_details.quantity) AS avg_quantity
+FROM 
+    order_details
+INNER JOIN products ON order_details.product_id = products.id
+INNER JOIN categories ON products.category_id = categories.id
+GROUP BY 
+    categories.name
+HAVING 
+    AVG(order_details.quantity) > 21
+ORDER BY 
+    row_count DESC;
+
+
+-- Select four rows skipping the first row
+SELECT *
+FROM orders
+LIMIT 4 OFFSET 1;
+
+
+
+
